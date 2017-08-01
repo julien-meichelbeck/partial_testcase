@@ -85,7 +85,7 @@ end
 ```
 
 ### How to stub methods?
-if you want to add specific methods for one test:
+If you want to add specific methods for one test:
 
 ```ruby
 test 'sample test' do
@@ -97,7 +97,7 @@ test 'sample test' do
 end
 ```
 
-Or if you need the same methods for every test, use the `with_helpers` method:
+If you need the same methods for every test, use the `with_helpers` method:
 ```ruby
 class SampleTest < PartialTestcase::Base
   with_helpers do
