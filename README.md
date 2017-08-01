@@ -1,6 +1,7 @@
 # PartialTestcase
 PartialTestcase is a gem providing unit tests for your partials.
 
+![](https://api.travis-ci.org/julien-meichelbeck/partial_testcase.svg?branch=master)
 
 ## Why?
 * Integration tests are slow.
@@ -104,9 +105,11 @@ test 'sample test' do
 end
 ```
 
-
 ## Contributing
-Contribution directions go here.
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/julien-meichelbeck/partial_testcase.
+
 
 ## License
+
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
