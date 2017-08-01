@@ -68,6 +68,13 @@ Otherwise, you can just specify the partial at each render:
 render_partial('sample/users', foo: 'bar')
 ```
 
+### How to include helpers and module?
+Use `with_module`:
+```ruby
+class SampleTest < PartialTestcase::Base
+  with_module UsersHelper
+end
+```
 
 ### How to stub methods?
 If you need some methods for all tests of the file, use the `with_helpers` method:
