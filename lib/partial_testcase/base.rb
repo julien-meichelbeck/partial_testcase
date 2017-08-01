@@ -21,23 +21,27 @@ module PartialTestcase
     end
 
     def self.with_module(mod)
-      self.modules << mod
+      modules << mod
+    end
+
+    def assign(**assigns)
+      @_assigns.merge!(assigns)
     end
 
     protected
 
     def setup_view
       @html_body = nil
+      @_assigns = {}
 
-      @action_view_class = Class.new(::ActionView::Base) {
-        def view_cache_dependencies; end
+      @_action_view_class =
+        Class.new(::ActionView::Base) do
+          def view_cache_dependencies; end
 
-        def combined_fragment_cache_key(key)
-          [:views, key]
+          def combined_fragment_cache_key(key)
+            [:views, key]
+          end
         end
-      }
-
-      @view = @action_view_class.new(ApplicationController.view_paths, {})
     end
 
     def document_root_element
@@ -45,10 +49,12 @@ module PartialTestcase
     end
 
     def render_partial(*args, &block)
+      @view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
+
       add_to_context(self.class.helpers_context)
       add_to_context(block)
       self.class.modules.each do |mod|
-        @action_view_class.include(mod)
+        @_action_view_class.include(mod)
       end
 
       options = args.extract_options!
@@ -65,7 +71,7 @@ module PartialTestcase
       return if block.nil?
       mod = Module.new
       mod.class_eval(&block)
-      @action_view_class.include(mod)
+      @_action_view_class.include(mod)
     end
   end
 end

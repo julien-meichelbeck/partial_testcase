@@ -62,14 +62,19 @@ Otherwise, if you test the same partial every time, use the `partial_path` metho
 ```ruby
 class SampleTest < PartialTestcase::Base
   partial_path 'sample/users'
-  
+
   test 'sample test' do
     render_partial(foo: 'bar')
   end
 end
 ```
 
-Otherwise, 
+### How to declare instance variables?
+Use `assign` before rendering the partial.
+```ruby
+  assign(user: @user) # This will make @user available in the partial
+  render_partial
+```
 
 ### How to include helpers and module?
 Use `with_module`:

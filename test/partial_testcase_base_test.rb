@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 class PartialTestcaseBaseTest < PartialTestcase::Base
@@ -90,6 +91,17 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
     html = render_partial('users/address', city: 'Gotham')
     expected = <<~HTML
       10 Pennyworth Street, Gotham
+    HTML
+    assert_equal expected, html
+  end
+
+  test 'instance variables' do
+    assign(user: OpenStruct.new(city: 'Metropolis'))
+
+    html = render_partial('users/user')
+
+    expected = <<~HTML
+      <address>Metropolis</address>
     HTML
     assert_equal expected, html
   end
