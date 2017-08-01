@@ -12,18 +12,18 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
   end
 
   test 'render root partial' do
-    html = <<~HTML.strip
+    html = <<~HTML
       <p>Root partial<p>
     HTML
-    assert_equal html, render_partial('root_partial').strip
+    assert_equal html, render_partial('root_partial')
   end
 
   test 'render nested partial' do
-    html = <<~HTML.strip
+    html = <<~HTML
       <span class="user-name">Name: Clark Kent<span>
       <span class="user-age">Age: 32<span>
     HTML
-    assert_equal html, render_partial('users/presentation').strip
+    assert_equal html, render_partial('users/presentation')
   end
 
   test 'assert_select selector' do
@@ -44,12 +44,12 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
   end
 
   test 'partial local_assigns' do
-    html = <<~HTML.strip
+    html = <<~HTML
       <div>
         <img class="user-avatar" src='http://foobar.com' />
       </div>
     HTML
-    assert_equal html, render_partial('users/avatar', avatar: 'http://foobar.com').strip
+    assert_equal html, render_partial('users/avatar', avatar: 'http://foobar.com')
   end
 
   test 'include helpers' do
@@ -59,8 +59,10 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
       end
     end
 
-
-    assert_equal '10 Pennyworth Street, Gotham', render_partial('users/address', city: 'Gotham').strip
+    expected = <<~HTML
+      10 Pennyworth Street, Gotham
+    HTML
+    assert_equal expected, render_partial('users/address', city: 'Gotham')
   end
 
   test 'include helpers with dynamic block' do
@@ -71,7 +73,10 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
         end
       end
 
-    assert_equal '10 Pennyworth Street, Gotham', html.strip
+    expected = <<~HTML
+      10 Pennyworth Street, Gotham
+    HTML
+    assert_equal expected, html
   end
 
   module ExistingHelper
@@ -83,6 +88,9 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
   test 'include existing helper' do
     self.class.with_module ExistingHelper
     html = render_partial('users/address', city: 'Gotham')
-    assert_equal '10 Pennyworth Street, Gotham', html.strip
+    expected = <<~HTML
+      10 Pennyworth Street, Gotham
+    HTML
+    assert_equal expected, html
   end
 end
