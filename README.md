@@ -6,7 +6,7 @@ PartialTestcase is a gem providing unit tests for your partials.
 * Integration tests are slow.
 * Controller tests are deprecated in favor of integration tests.
 * If well written, a partial can be seen as just a simple method returning HTML. That sounds like something that can be easily tested.
-* Partials can be messy. With simple units test, it is possible to test all the variants of your view layer.
+* Partials can be messy. With simple units test, it is possible to test all the variants of your view layer. How many times did you break something because your forgot to test a branch of your template?
 
 ## Installation
 Add this line to your application's Gemfile:
