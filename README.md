@@ -7,7 +7,7 @@ PartialTestcase is a gem providing unit tests for your partials.
 * Integration tests are slow.
 * Controller tests are deprecated in favor of integration tests.
 * If well written, a partial can be seen as just a simple method returning HTML. That sounds like something that can be easily tested.
-* Partials can be messy. With simple units test, it is possible to test all the variants of your view layer. How many times did you break something because your forgot to test a branch of your template?
+* Partials can become messy, even bloated. With simple units test, it is possible to test all the variants of your view layer. How many times did you break something because your forgot to test a branch of your template?
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -53,7 +53,12 @@ end
 
 ## Documentation
 ### How to specify the partial path?
-If you test the same partial in every test of the file, use the `partial_path` method:
+You can just specify the partial at each render:
+```ruby
+render_partial('sample/users', foo: 'bar')
+```
+
+Otherwise, if you test the same partial every time, use the `partial_path` method:
 ```ruby
 class SampleTest < PartialTestcase::Base
   partial_path 'sample/users'
@@ -64,10 +69,7 @@ class SampleTest < PartialTestcase::Base
 end
 ```
 
-Otherwise, you can just specify the partial at each render:
-```ruby
-render_partial('sample/users', foo: 'bar')
-```
+Otherwise, 
 
 ### How to include helpers and module?
 Use `with_module`:
@@ -78,7 +80,19 @@ end
 ```
 
 ### How to stub methods?
-If you need some methods for all tests of the file, use the `with_helpers` method:
+if you want to add specific methods for one test:
+
+```ruby
+test 'sample test' do
+  render_partial('sample/user') do
+    def format_address
+      # ...
+    end
+  end
+end
+```
+
+Or if you need the same methods for every test, use the `with_helpers` method:
 ```ruby
 class SampleTest < PartialTestcase::Base
   with_helpers do
@@ -87,18 +101,6 @@ class SampleTest < PartialTestcase::Base
     en
 
     def format_address(address, city)
-      # ...
-    end
-  end
-end
-```
-
-Or if you want to add specific methods just for one test:
-
-```ruby
-test 'sample test' do
-  render_partial('sample/user') do
-    def format_address
       # ...
     end
   end
