@@ -73,4 +73,16 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
 
     assert_equal '10 Pennyworth Street, Gotham', html.strip
   end
+
+  module ExistingHelper
+    def format_address(city)
+      "10 Pennyworth Street, #{city}"
+    end
+  end
+
+  test 'include existing helper' do
+    self.class.with_module ExistingHelper
+    html = render_partial('users/address', city: 'Gotham')
+    assert_equal '10 Pennyworth Street, Gotham', html.strip
+  end
 end
