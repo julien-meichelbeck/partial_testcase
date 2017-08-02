@@ -2,6 +2,12 @@
 require 'test_helper'
 
 class PartialTestcaseBaseTest < PartialTestcase::Base
+  teardown do
+    self.class.partial = nil
+    self.class.helpers_context = nil
+    self.class.modules = []
+  end
+
   test 'assert_select is included' do
     assert defined?(assert_select)
   end
@@ -102,6 +108,20 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
 
     expected = <<~HTML
       <address>Metropolis</address>
+    HTML
+    assert_equal expected, html
+  end
+
+  test 'helpers can be overriden' do
+    self.class.with_module ExistingHelper
+    self.class.with_helpers do
+      def format_address(city)
+        "#{city} City"
+      end
+    end
+    html = render_partial('users/address', city: 'Gotham')
+    expected = <<~HTML
+      Gotham City
     HTML
     assert_equal expected, html
   end

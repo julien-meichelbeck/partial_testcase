@@ -4,7 +4,7 @@ module PartialTestcase
     include Rails::Dom::Testing::Assertions
 
     attr_reader :html_body
-    class_attribute :partial, :helpers_context, :modules
+    class_attribute :partial, :helpers_context, :helper_values, :modules
     self.modules = []
 
     def setup
@@ -51,11 +51,11 @@ module PartialTestcase
     def render_partial(*args, &block)
       @view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
 
-      add_to_context(self.class.helpers_context)
-      add_to_context(block)
       self.class.modules.each do |mod|
         @_action_view_class.include(mod)
       end
+      add_to_context(self.class.helpers_context)
+      add_to_context(block)
 
       options = args.extract_options!
       partial_path = args[0] || self.class.partial
