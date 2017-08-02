@@ -16,6 +16,12 @@ Add this line to your application's Gemfile:
 gem 'partial_testcase'
 ```
 
+Require the module at the top of your `test_helper.rb`:
+
+```ruby
+require 'partial_testcase'
+```
+
 You're ready to go!
 
 ## Simple example
