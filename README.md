@@ -66,7 +66,7 @@ render_partial('sample/users', foo: 'bar')
 
 Otherwise, if you test the same partial every time, use the `partial_path` method:
 ```ruby
-class SampleTest < PartialTestcase::Base
+class Sample::UsersTest < PartialTestcase::Base
   partial_path 'sample/users'
 
   test 'sample test' do
