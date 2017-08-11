@@ -13,7 +13,7 @@ PartialTestcase is a gem providing unit tests for your partials.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'partial_testcase'
+gem 'partial_testcase', require: false
 ```
 
 Require the module at the top of your `test_helper.rb`:
