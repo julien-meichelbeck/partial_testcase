@@ -45,7 +45,7 @@ module PartialTestcase
     end
 
     def document_root_element
-      Nokogiri::XML(@html_body.to_s)
+      Nokogiri::HTML(@html_body.to_s)
     end
 
     def render_partial(*args, &block)
