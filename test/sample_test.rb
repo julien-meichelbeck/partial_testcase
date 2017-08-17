@@ -1,23 +1,30 @@
+# frozen_string_literal: true
 require 'test_helper'
 User = Struct.new(:name)
 
 class SampleTest < PartialTestcase::Base
-  setup do
-    @user = User.new('Clark')
+  with_module Rails.application.routes.url_helpers
+  with_helpers do
+    def country
+      :us
+    end
+
+    def logout_path
+      '/logout'
+    end
   end
 
-  test 'just an example' do
-    html = render_partial('sample/user', user: @user)
+  let(:user) { User.new('Clark') }
 
-    # Use the same selectors as in your Controller tests
-    assert_select 'span.username', text: 'Clark'
+  describe 'sample partial' do
+    it 'displays the username' do
+      render_partial('sample/user', user: user)
+      assert_select 'span.username', text: 'Clark'
+    end
 
-    # Or test directly the rendered html
-    expected_html = <<~HTML
-      <div>
-        <span class="username">Clark</span>
-      </div>
-    HTML
-    assert_equal expected_html, html
+    it 'displays the logout_path if the user is logged in' do
+      render_partial('sample/user', user: user)
+      assert_select 'a[href="/logout"]', text: 'Sign out'
+    end
   end
 end

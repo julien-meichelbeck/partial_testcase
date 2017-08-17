@@ -1,3 +1,6 @@
 <div>
   <span class="username"><%= user.name %></span>
+  <% if country == :us %>
+    <%= link_to 'Sign out', logout_path %>
+  <% end %>
 </div>
