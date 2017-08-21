@@ -1,5 +1,5 @@
 # PartialTestcase
-PartialTestcase is a gem providing unit tests for your partials.
+PartialTestcase is a gem providing unit tests for your partials using Minitest.
 
 ![](https://api.travis-ci.org/julien-meichelbeck/partial_testcase.svg?branch=master)
 
