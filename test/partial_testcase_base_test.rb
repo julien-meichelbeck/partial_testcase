@@ -4,7 +4,7 @@ require 'test_helper'
 class PartialTestcaseBaseTest < PartialTestcase::Base
   teardown do
     self.class.partial = nil
-    self.class.helpers_context = nil
+    self.class.helpers_contexts = []
     self.class.modules = []
   end
 
@@ -61,15 +61,21 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
 
   test 'include helpers' do
     self.class.with_helpers do
+      def city_name(city)
+        city.capitalize
+      end
+    end
+
+    self.class.with_helpers do
       def format_address(city)
-        "10 Pennyworth Street, #{city}"
+        "10 Pennyworth Street, #{city_name(city)}"
       end
     end
 
     expected = <<~HTML
       10 Pennyworth Street, Gotham
     HTML
-    assert_equal expected, render_partial('users/address', city: 'Gotham')
+    assert_equal expected, render_partial('users/address', city: 'gotham')
   end
 
   test 'include helpers with dynamic block' do

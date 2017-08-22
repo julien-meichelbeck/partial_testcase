@@ -4,8 +4,9 @@ module PartialTestcase
     include Rails::Dom::Testing::Assertions
 
     attr_reader :html_body
-    class_attribute :partial, :helpers_context, :modules
+    class_attribute :partial, :helpers_contexts, :modules
     self.modules = []
+    self.helpers_contexts = []
 
     def before_setup
       setup_view
@@ -17,7 +18,7 @@ module PartialTestcase
     end
 
     def self.with_helpers(&block)
-      self.helpers_context = block
+      helpers_contexts << block
     end
 
     def self.with_module(mod)
@@ -54,7 +55,9 @@ module PartialTestcase
       self.class.modules.each do |mod|
         @_action_view_class.include(mod)
       end
-      add_to_context(self.class.helpers_context)
+      self.class.helpers_contexts.each do |context|
+        add_to_context(context)
+      end
       add_to_context(block)
 
       options = args.extract_options!
