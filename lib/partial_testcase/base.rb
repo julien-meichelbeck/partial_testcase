@@ -4,12 +4,12 @@ module PartialTestcase
     include Rails::Dom::Testing::Assertions
 
     attr_reader :html_body
-    class_attribute :partial, :helpers_context, :helper_values, :modules
+    class_attribute :partial, :helpers_context, :modules
     self.modules = []
 
-    def setup
-      super
+    def before_setup
       setup_view
+      super
     end
 
     def self.partial_path(partial)
