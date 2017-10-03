@@ -37,8 +37,7 @@ module PartialTestcase
 
       @_action_view_class =
         Class.new(::ActionView::Base) do
-          def view_cache_dependencies;
-          end
+          def view_cache_dependencies; end
 
           def combined_fragment_cache_key(key)
             [:views, key]
