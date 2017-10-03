@@ -4,7 +4,7 @@ require 'test_helper'
 class PartialTestcaseBaseTest < PartialTestcase::Base
   teardown do
     self.class.partial = nil
-    self.class.helpers_contexts = []
+    self.class.helpers = []
     self.class.modules = []
   end
 
@@ -129,6 +129,20 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
     expected = <<~HTML
       Gotham City
     HTML
+    assert_equal expected, html
+  end
+
+  test 'helpers can reference test context' do
+    def local_variable
+      'defined in test'
+    end
+    self.class.with_helpers do
+      def helper_method
+        local_variable
+      end
+    end
+    html = render_partial('sample/with_helper_call')
+    expected = '<div>defined in test</div>'
     assert_equal expected, html
   end
 end

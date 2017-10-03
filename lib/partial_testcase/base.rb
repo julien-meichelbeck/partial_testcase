@@ -4,9 +4,9 @@ module PartialTestcase
     include Rails::Dom::Testing::Assertions
 
     attr_reader :html_body
-    class_attribute :partial, :helpers_contexts, :modules
+    class_attribute :partial, :helpers, :modules
     self.modules = []
-    self.helpers_contexts = []
+    self.helpers = []
 
     def before_setup
       setup_view
@@ -18,7 +18,7 @@ module PartialTestcase
     end
 
     def self.with_helpers(&block)
-      helpers_contexts << block
+      helpers << block
     end
 
     def self.with_module(mod)
@@ -50,15 +50,16 @@ module PartialTestcase
     end
 
     def render_partial(*args, &block)
-      @view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
+      view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
 
       self.class.modules.each do |mod|
         @_action_view_class.include(mod)
       end
-      self.class.helpers_contexts.each do |context|
-        add_to_context(context)
+      self.class.helpers.each do |helper|
+        add_to_context(helper)
       end
       add_to_context(block)
+      add_test_context_inheritence(view)
 
       options = args.extract_options!
       partial_path = args[0] || self.class.partial
@@ -67,7 +68,7 @@ module PartialTestcase
         raise "You must specify the path of the partial you are testing. Call the class method 'partial_path'"
       end
 
-      @html_body = @view.render(partial: partial_path, locals: options)
+      @html_body = view.render(partial: partial_path, locals: options)
     end
 
     def add_to_context(block)
@@ -75,6 +76,16 @@ module PartialTestcase
       mod = Module.new
       mod.class_eval(&block)
       @_action_view_class.include(mod)
+    end
+
+    def add_test_context_inheritence(view)
+      add_to_context(Proc.new {
+        attr_accessor :test_instance
+        def method_missing(method, *args, &block)
+          test_instance.send method, *args, &block
+        end
+      })
+      view.test_instance = self
     end
   end
 end
