@@ -37,7 +37,8 @@ module PartialTestcase
 
       @_action_view_class =
         Class.new(::ActionView::Base) do
-          def view_cache_dependencies; end
+          def view_cache_dependencies;
+          end
 
           def combined_fragment_cache_key(key)
             [:views, key]
@@ -50,7 +51,7 @@ module PartialTestcase
     end
 
     def render_partial(*args, &block)
-      @view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
+      view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
 
       self.class.modules.each do |mod|
         @_action_view_class.include(mod)
@@ -59,6 +60,7 @@ module PartialTestcase
         add_to_context(context)
       end
       add_to_context(block)
+      add_test_context(view)
 
       options = args.extract_options!
       partial_path = args[0] || self.class.partial
@@ -67,7 +69,7 @@ module PartialTestcase
         raise "You must specify the path of the partial you are testing. Call the class method 'partial_path'"
       end
 
-      @html_body = @view.render(partial: partial_path, locals: options)
+      @html_body = view.render(partial: partial_path, locals: options)
     end
 
     def add_to_context(block)
@@ -75,6 +77,17 @@ module PartialTestcase
       mod = Module.new
       mod.class_eval(&block)
       @_action_view_class.include(mod)
+    end
+
+    def add_test_context(view)
+      mod = Module.new do
+        attr_accessor :test_instance
+        def method_missing(method, *args, &block)
+          test_instance.send method, *args, &block
+        end
+      end
+      view.class.include(mod)
+      view.test_instance = self
     end
   end
 end
