@@ -80,13 +80,12 @@ module PartialTestcase
     end
 
     def add_test_context_inheritence(view)
-      mod = Module.new do
+      add_to_context(Proc.new {
         attr_accessor :test_instance
         def method_missing(method, *args, &block)
           test_instance.send method, *args, &block
         end
-      end
-      view.class.include(mod)
+      })
       view.test_instance = self
     end
   end
