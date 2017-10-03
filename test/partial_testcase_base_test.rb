@@ -131,4 +131,35 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
     HTML
     assert_equal expected, html
   end
+
+  test 'helpers can reference test context' do
+    def local_variable
+      'defined in test'
+    end
+    self.class.with_helpers do
+      def helper_method
+        local_variable
+      end
+    end
+    html = render_partial('sample/with_helper_call')
+    expected = '<div>defined in test</div>'
+    assert_equal expected, html
+  end
+
+  # describe 'with helper referencing local variable' do
+  #   let (:local_variable) { 'defined in test' }
+  #   with_helpers do
+  #     def helper_method
+  #       local_variable
+  #     end
+  #   end
+  #
+  #   it 'helpers can reference test context' do
+  #     html = render_partial('sample/with_helper_call')
+  #     expected = <<~HTML
+  #       <div>defined in test</div>
+  #     HTML
+  #     assert_equal expected, html
+  #   end
+  # end
 end
