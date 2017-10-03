@@ -4,7 +4,7 @@ require 'test_helper'
 class PartialTestcaseBaseTest < PartialTestcase::Base
   teardown do
     self.class.partial = nil
-    self.class.helpers_contexts = []
+    self.class.helpers = []
     self.class.modules = []
   end
 
