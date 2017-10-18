@@ -109,7 +109,7 @@ class SampleTest < PartialTestcase::Base
   with_helpers do
     def country
       :us
-    en
+    end
 
     def format_address(address, city)
       # ...
