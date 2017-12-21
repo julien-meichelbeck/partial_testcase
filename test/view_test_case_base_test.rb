@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'test_helper'
 
-class PartialTestcaseBaseTest < PartialTestcase::Base
+class ViewTestCaseBaseTest < ViewTestCase::Base
   teardown do
     self.class.partial = nil
     self.class.method_contexts = []
@@ -153,7 +153,7 @@ class PartialTestcaseBaseTest < PartialTestcase::Base
   end
 
   test 'assert_select without rendering partial' do
-    assert_raise PartialTestcase::MissingRenderError do
+    assert_raise ViewTestCase::MissingRenderError do
       assert_select '.user-name'
     end
   end

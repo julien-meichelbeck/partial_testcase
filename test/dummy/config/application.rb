@@ -11,7 +11,7 @@ require "rails/test_unit/railtie"
 require "sprockets/railtie"
 
 Bundler.require(*Rails.groups)
-require "partial_testcase"
+require "view_test_case"
 
 module Dummy
   class Application < Rails::Application

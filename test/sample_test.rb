@@ -1,7 +1,9 @@
+# frozen_string_literal: true
 require 'test_helper'
+
 User = Struct.new(:name)
 
-class SampleTest < PartialTestcase::Base
+class SampleTest < ViewTestCase::Base
   setup do
     @user = User.new('Clark')
   end

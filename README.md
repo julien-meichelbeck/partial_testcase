@@ -1,7 +1,7 @@
-# PartialTestcase
-PartialTestcase is a gem providing unit tests for your partials using Minitest.
+# ViewTestCase
+ViewTestCase is a gem providing unit tests for your partials using Minitest.
 
-![](https://api.travis-ci.org/julien-meichelbeck/partial_testcase.svg?branch=master)
+![](https://api.travis-ci.org/julien-meichelbeck/view_test_case.svg?branch=master)
 
 ## Why?
 * Integration tests are slow.
@@ -13,13 +13,13 @@ PartialTestcase is a gem providing unit tests for your partials using Minitest.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'partial_testcase', require: false
+gem 'view_test_case', require: false
 ```
 
 Require the module at the top of your `test_helper.rb`:
 
 ```ruby
-require 'partial_testcase'
+require 'view_test_case'
 ```
 
 You're ready to go!
@@ -34,7 +34,7 @@ Let's test the following partial:
 ```
 
 ```ruby
-class SampleTest < PartialTestcase::Base
+class SampleTest < ViewTestCase::Base
   setup do
     @user = User.new('Clark')
   end
@@ -64,10 +64,10 @@ You can just specify the partial at each render:
 render('sample/users', foo: 'bar')
 ```
 
-Otherwise, if you test the same partial every time, use the `partial_path` method:
+Otherwise, if you test the same partial every time, just set the partial variable:
 ```ruby
-class Sample::UsersTest < PartialTestcase::Base
-  partial_path 'sample/users'
+class Sample::UsersTest < ViewTestCase::Base
+  self.partial = 'sample/users'
 
   test 'sample test' do
     render(foo: 'bar')
@@ -76,16 +76,16 @@ end
 ```
 
 ### How to declare instance variables?
-Use `assign` before rendering the partial.
+Just declare your instance variable.
 ```ruby
-  assign(user: @user) # This will make @user available in the partial
+  @user = User.new  # This will make @user available in the partial
   render
 ```
 
 ### How to include helpers and module?
 Use `with_module`:
 ```ruby
-class SampleTest < PartialTestcase::Base
+class SampleTest < ViewTestCase::Base
   with_module UsersHelper
 end
 ```
@@ -103,10 +103,10 @@ test 'sample test' do
 end
 ```
 
-If you need the same methods for every test, use the `with_helpers` method:
+If you need the same methods for every test, use the `helper_methods` method:
 ```ruby
-class SampleTest < PartialTestcase::Base
-  with_helpers do
+class SampleTest < ViewTestCase::Base
+  helper_methods do
     def country
       :us
     end
@@ -120,7 +120,7 @@ end
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/julien-meichelbeck/partial_testcase.
+Bug reports and pull requests are welcome on GitHub at https://github.com/julien-meichelbeck/view_test_case.
 
 
 ## License

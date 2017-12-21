@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module PartialTestcase
+module ViewTestCase
   class Base < ::ActionView::TestCase
     class_attribute :partial
     class_attribute :method_contexts
