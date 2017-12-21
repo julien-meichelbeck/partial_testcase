@@ -1,91 +1,46 @@
 # frozen_string_literal: true
 module PartialTestcase
   class Base < ::ActionView::TestCase
-    include Rails::Dom::Testing::Assertions
+    class_attribute :partial
+    class_attribute :method_contexts
+    class_attribute :view_modules
+    self.view_modules = []
+    self.method_contexts = []
 
-    attr_reader :html_body
-    class_attribute :partial, :helpers, :modules
-    self.modules = []
-    self.helpers = []
-
-    def before_setup
-      setup_view
-      super
-    end
-
-    def self.partial_path(partial)
-      self.partial = partial
-    end
-
-    def self.with_helpers(&block)
-      helpers << block
+    def self.helper_methods(&block)
+      method_contexts << block
     end
 
     def self.with_module(mod)
-      modules << mod
-    end
-
-    def assign(**assigns)
-      @_assigns.merge!(assigns)
-    end
-
-    protected
-
-    def setup_view
-      @html_body = nil
-      @_assigns = {}
-
-      @_action_view_class =
-        Class.new(::ActionView::Base) do
-          def view_cache_dependencies; end
-
-          def combined_fragment_cache_key(key)
-            [:views, key]
-          end
-        end
+      view_modules << mod
     end
 
     def document_root_element
-      Nokogiri::HTML(@html_body.to_s)
+      raise MissingRenderError if rendered.blank?
+      super
     end
 
-    def render_partial(*args, &block)
-      view = @_action_view_class.new(ApplicationController.view_paths, @_assigns)
-
-      self.class.modules.each do |mod|
-        @_action_view_class.include(mod)
-      end
-      self.class.helpers.each do |helper|
-        add_to_context(helper)
-      end
-      add_to_context(block)
-      add_test_context_inheritence(view)
-
-      options = args.extract_options!
-      partial_path = args[0] || self.class.partial
-
-      if partial_path.nil?
-        raise "You must specify the path of the partial you are testing. Call the class method 'partial_path'"
-      end
-
-      @html_body = view.render(partial: partial_path, locals: options)
-    end
-
-    def add_to_context(block)
-      return if block.nil?
-      mod = Module.new
-      mod.class_eval(&block)
-      @_action_view_class.include(mod)
-    end
-
-    def add_test_context_inheritence(view)
-      add_to_context(Proc.new {
-        attr_accessor :test_instance
-        def method_missing(method, *args, &block)
-          test_instance.send method, *args, &block
+    def view
+      @view ||=
+        super.tap do |view|
+          view.extend(ApplicationHelper) if defined?(ApplicationHelper)
+          self.class.view_modules.each { |mod| view.extend(mod) }
         end
-      })
-      view.test_instance = self
+    end
+
+    def render(*args, &block)
+      self.class.method_contexts << block if block
+      self.class.method_contexts.each do |context|
+        mod = Module.new
+        mod.class_eval(&context)
+        view.extend(mod)
+      end
+
+      if self.class.partial
+        super(self.class.partial, args.extract_options!)
+      else
+        super
+      end
     end
   end
 end

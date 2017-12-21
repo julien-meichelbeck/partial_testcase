@@ -40,7 +40,7 @@ class SampleTest < PartialTestcase::Base
   end
 
   test 'just an example' do
-    html = render_partial('sample/user', user: @user)
+    html = render('sample/user', user: @user)
 
     # Use the same selectors as in your Controller tests
     assert_select 'span.username', text: 'Clark'
@@ -61,7 +61,7 @@ end
 ### How to specify the partial path?
 You can just specify the partial at each render:
 ```ruby
-render_partial('sample/users', foo: 'bar')
+render('sample/users', foo: 'bar')
 ```
 
 Otherwise, if you test the same partial every time, use the `partial_path` method:
@@ -70,7 +70,7 @@ class Sample::UsersTest < PartialTestcase::Base
   partial_path 'sample/users'
 
   test 'sample test' do
-    render_partial(foo: 'bar')
+    render(foo: 'bar')
   end
 end
 ```
@@ -79,7 +79,7 @@ end
 Use `assign` before rendering the partial.
 ```ruby
   assign(user: @user) # This will make @user available in the partial
-  render_partial
+  render
 ```
 
 ### How to include helpers and module?
@@ -95,7 +95,7 @@ If you want to add specific methods for one test:
 
 ```ruby
 test 'sample test' do
-  render_partial('sample/user') do
+  render('sample/user') do
     def format_address
       # ...
     end
